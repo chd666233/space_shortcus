@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>快捷导航</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+      }
+      .container {
+        display: flex;
+        padding: 20px;
+        padding-top: 0;
+      }
+      .main-content {
+        flex: 2; /* 主内容占3份 */
+        background-color: #fff;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* border-radius: 8px; */
+      }
+      .sidebar {
+        flex: 2; /* 辅助内容占1份 */
+        /* margin-left: 20px; */
+        background-color: #fff;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* border-radius: 8px; */
+      }
+      /* .icon-example:before {
+        content: "\eb7e";
+      } */
+      :root {
+        --keybinding-background: rgba(0, 0, 0, 0.08);
+        --keybinding-foreground: #005fb8;
+      }
+      .container1 > div:first-child {
+        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+        padding: 2px 4px;
+        color: var(--blue);
+        background-color: var(--keybinding-background);
+        color: var(--keybinding-foreground);
+        display: inline-block;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -o-border-radius: 4px;
+        border-radius: 4px;
+        margin-right: 5px;
+      }
+      .key {
+        color: #f9f9f9;
+        font-weight: 600;
+        background-color: #005fb8;
+        padding: 2px 5px;
+        border: none; /* 去掉边框 */
+        border-radius: 5px; /* 圆角 */
+        box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+      }
+      .shortcuts {
+        color: black;
+        font-weight: 600;
+        background: #ffc745;
+        padding: 2px 5px;
+        border: none; /* 去掉边框 */
+        border-radius: 5px; /* 圆角 */
+        box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+      }
+      .nonShortscuts {
+        background-color: brown;
+        font-weight: 600;
+        padding: 2px 5px;
+        border: none; /* 去掉边框 */
+        border-radius: 5px; /* 圆角 */
+        box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3); /* 阴影效果 */
+      }
+      .container1 {
+        display: flex;
+        padding: 2px;
+        align-items: center;
+      }
+      #wait,
+      #nonComm {
+        display: none;
+      }
+      .inputShow {
+        position: fixed;
+        padding-left: 13px;
+        height: 40px;
+        bottom: 0;
+        left: calc(100 / 5 * 3%);
+        color: cadetblue;
+      }
+      .inputShow #nonComm {
+        color: red;
+      }
+      .inputShow #wait {
+        color: #ffc745;
+      }
+      .header {
+        background-image: url("{{imgUri}}");
+        height: 100px;
+        width: 100%;
+        background-position: 50%;
+        background-size: cover;
+        background-size: calc(100% - 40px); /* 图片宽度缩小，留出 padding */
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .header h1 {
+        color: #fff;
+        font-size: 1.2em;
+        line-height: 100px;
+        margin: 0 0 0 1.5em;
+        padding: 0 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>键盘导航</h1>
+    </div>
+
+    <div class="inputShow">
+      <div id="inputKey">输入:</div>
+      <span id="wait">(Space已按下)。正在等待按下第二个按键...</span>
+      <span id="nonComm">组合键(, )不是命令。</span>
+    </div>
+    <div class="container">
+      <div class="main-content">
+        <h2>活动栏导航</h2>
+        <!-- <h2>主要内容</h2> -->
+        <!-- <p>这里是详细的文字内容或表单。</p> -->
+        <div id="overlay"></div>
+      </div>
+      <div class="sidebar">
+        <h2>
+          常规导航
+          <!-- 辅助说明 -->
+          <!-- <i
+            class="layui-icon"
+            style="font-family: 'layui-icon' !important"
+            >&#xeb7e;</i
+          > -->
+        </h2>
+        <!-- <p>这里是辅助信息或预览内容。</p> -->
+        <div id="bs"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    var idx = 0;
+    var canvasArr = [];
+    var ctxArr = [];
+    var txtArr = [];
+    var vscode = acquireVsCodeApi();
+    function drawButton(
+      text,
+      fontSize,
+      fontColor,
+      radius,
+      padding,
+      shadow,
+      fillStyle,
+      strokeStyle
+    ) {
+      let dpr = window.devicePixelRatio || 1;
+      const canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      // 先设置正确的字体大小（放大 dpr 倍）
+      ctx.font = `${fontSize}px Menlo, Monaco, Consolas, 'Courier New', monospace`;
+
+      // 计算文本宽度
+      let textWidth = ctx.measureText(text).width;
+
+      // 计算按钮的尺寸（逻辑像素尺寸）
+      let btnWidth = textWidth + padding.X * 2;
+      let btnHeight = fontSize + padding.Y * 2 + 5.5;
+
+      // **物理像素尺寸（乘 dpr）**
+      canvas.width = btnWidth * dpr + 3;
+      canvas.height = btnHeight * dpr + 3;
+
+      // **CSS 保持原大小，避免视觉上变大**
+      canvas.style.width = `${btnWidth + 3}px`;
+      canvas.style.height = `${btnHeight + 3}px`;
+
+      // **缩放上下文，避免绘制内容被放大**
+      ctx.scale(dpr, dpr);
+      ctx.font = `${fontSize}px Menlo, Monaco, Consolas, 'Courier New', monospace`;
+      ctx.shadowColor = shadow.shadowColor;
+      ctx.shadowBlur = shadow.blur;
+      ctx.shadowOffsetX = shadow.shadowOffsetX;
+      ctx.shadowOffsetY = shadow.shadowOffsetY;
+
+      //黄色背景 黑色边框
+      ctx.fillStyle = fillStyle;
+      ctx.strokeStyle = strokeStyle;
+
+      drawRoundedRect(ctx, 0, 2, btnWidth, btnHeight - 3, radius);
+
+      ctx.shadowColor = "transparent";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+
+      // **计算文本位置**
+      var textX = padding.X; // 让文本从左侧 padding 开始
+      var textY = (btnHeight - 3) / 2 + padding.Y + 2;
+
+      // **绘制完整文本**
+      ctx.fillStyle = fontColor;
+      ctx.fillText(text, textX, textY);
+      ctxArr[idx] = ctx;
+      txtArr[idx] = { text, textX, textY };
+      canvasArr[idx] = canvas;
+      // return ctx;
+      // **测量第一个字母宽度**
+      // var firstLetter = text.charAt(0);
+      // var letterWidth = ctx.measureText(firstLetter).width;
+      // var seconedLetter = text.charAt(1);
+      // letterWidth += ctx.measureText(seconedLetter).width;
+
+      // // **计算第一个字母的起始位置**
+      // var firstLetterX = textX; // 由于 textAlign = "left"，起点就是 `textX`
+
+      // // **绘制红色高亮的第一个字母**
+      // ctx.fillStyle = "red";
+      // ctx.fillText(firstLetter+seconedLetter, firstLetterX, textY);
+    }
+    var timeoutIdArr = [];
+    var clearFunClouser = [];
+    function highlightKey(inputKey, str) {
+      function isKeyCombinationModal() {
+        // 组合键模式
+        return str === "<Space>" + " ";
+      }
+      function needAddTimeout() {
+        //以Space开头的需要计时
+        return (
+          clearFunClouser.length > 0 &&
+          timeoutIdArr.length === 0 &&
+          isKeyCombinationModal()
+        );
+      }
+      function needClearTimeout() {
+        // 输入了一位匹配的或输入了一位不匹配的   全都清除
+        // 在组合键模式下再输入了人物的一位 +
+        let reg = new RegExp(/^<Space> .+/);
+        return timeoutIdArr.length > 0 && reg.test(str);
+      }
+      function needClearHighlight() {
+        // 每次都清除重新绘制
+        return clearFunClouser.length > 0;
+      }
+      function addspaceTimeout() {
+        // 如果是space 增加一个定时器，增加前，如果有计时器了，不要再次增加
+        if (needAddTimeout()) {
+          clearFunClouser.forEach((fn, index) => {
+            // console.log(111);
+            // if (timeoutIdArr[index]) clearTimeout(timeoutIdArr[index]);
+            // if (!timeoutIdArr[index]) {
+            timeoutIdArr[index] = setTimeout(() => {
+              // console.log(222);
+              fn();
+              accKey.splice(-1, 1);
+              vscode.postMessage({ type: "Backspace" });
+
+              var inputKey = document.getElementById("inputKey");
+              inputKey.innerHTML = "输入: ";
+              document.getElementById("wait").style.display = "none";
+
+              timeoutIdArr[index] = null;
+              if (timeoutIdArr.every((id) => id === null)) {
+                timeoutIdArr = [];
+              }
+            }, 5000);
+            // }
+          });
+        }
+      }
+      function clearSpaceTimeout() {
+        console.log(333);
+        if (needClearTimeout()) {
+          timeoutIdArr.forEach((id) => clearTimeout(id));
+          timeoutIdArr = [];
+        }
+      }
+      function clearHighlight() {
+        if (needClearHighlight()) {
+          clearFunClouser.forEach((fn) => fn());
+          clearFunClouser = [];
+        }
+      }
+      function addHightlight() {
+        //删除后匹配spance不再高亮
+        // if (inputKey === "Backspace" && str === "<Space>" + " ") return;
+        txtArr.forEach(({ text, textX, textY }, index) => {
+          // console.log(text, str, text.startsWith(str));
+          let textUp = text.toLocaleUpperCase();
+          let strUp = str.toLocaleUpperCase();
+          // console.log(textUp, strUp, text, str);
+          if (textUp.startsWith(strUp)) {
+            //匹配 、删除后匹配
+            var fontCol = text.startsWith("<Space>")
+              ? ["#005fb8", "white"]
+              : ["#ffc745", "black"];
+            var w = ctxArr[index].measureText(str).width;
+            ctxArr[index].fillStyle = "red";
+            ctxArr[index].fillText(str, textX, textY);
+
+            clearFunClouser[index] = function () {
+              ctxArr[index].fillStyle = fontCol[0];
+              ctxArr[index].fillRect(textX, textY - 13 / 2, w, 13);
+              ctxArr[index].fillStyle = fontCol[1];
+              ctxArr[index].fillText(str, textX, textY);
+            };
+          }
+        });
+      }
+      clearHighlight();
+      clearSpaceTimeout();
+      addHightlight();
+      addspaceTimeout();
+    }
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      //上线   从左到右
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      //右上角
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      //右线 从上到下
+      ctx.lineTo(x + width, y + height - radius);
+      //右下角
+      ctx.quadraticCurveTo(
+        x + width,
+        y + height,
+        x + width - radius,
+        y + height
+      );
+      //下线 从右到左
+      ctx.lineTo(x + radius, y + height);
+      //左下角
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      //左线 从下到上
+      ctx.lineTo(x, y + radius);
+      //左上角
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    }
+  </script>
+  <script>
+    var accKey = [];
+    var validKey;
+    // let isKeyCombination = false;
+    document.addEventListener("keydown", function (event) {
+      console.log("keydown...");
+      // //组合键模式
+      let spaceStr = "<Space>" + " ";
+      let backspaceStr = "<Backspace>";
+      function isKeyCombinationModal() {
+        // 只要输入了space就是组合键模式(最后1位是space)
+        return accKey[0] === spaceStr || accKey[accKey.length - 1] === spaceStr;
+      }
+      function canInput() {
+        // 对于backspace键，可以space,backspace
+        return isKeyCombinationModal();
+      }
+      function needClear() {
+        // 组合键模式继续输入需要把前面的清除
+        // Space Space xxx 时把前面的清除
+        // 只要输入了space就是组合键模式，就要把之前的清空非space清空
+        return isKeyCombinationModal() && accKey.length >= 2;
+      }
+      function needClear2() {
+        // 组合键模式继续输入需要把前面的清除
+        // A-Space 这种非不是space开头的加Space,把前面的清除掉。
+        return !isKeyCombinationModal();
+      }
+      function needShowWaitTip() {
+        // 第一个是space
+        return isKeyCombinationModal();
+      }
+      function needShowNonCommTip() {
+        return needClear();
+      }
+      function isValidKeyCombination(str) {
+        let reg = new RegExp(/^(<Space> |<Shift>|[a-zA-Z])/);
+
+        return !reg.test(str);
+      }
+      function tip() {
+        let ele = document.getElementById("nonComm");
+        let waitEle = document.getElementById("wait");
+        if (needShowWaitTip()) {
+          waitEle.style.display = "inline";
+          ele.style.display = "none";
+        }
+        if (needShowNonCommTip()) {
+          setTimeout(() => {
+            waitEle.style.display = "none";
+            ele.style.display = "inline";
+            ele.innerHTML =
+              "组合键(" +
+              accKey.join(",").replace(/</g, "&lt;").replace(/>/g, "&gt;") +
+              ")不是命令。";
+          });
+        }
+      }
+      function clearInput() {
+        accKey = [];
+        vscode.postMessage({ type: "clearBuffer" });
+        document.getElementById("nonComm").style.display = "none";
+      }
+
+      if (event.key === " " || event.code === "Space") {
+        event.preventDefault(); // 阻止默认行为 [[7]]
+        // event.stopPropagation(); // 阻止事件冒泡
+        if (needClear() || needClear2()) {
+          clearInput();
+        }
+        accKey.push(spaceStr);
+
+        tip();
+
+        highlightKey(spaceStr, accKey.join(""));
+      } else if (event.code === "Backspace") {
+        if (needClear()) {
+          clearInput();
+        }
+        if (canInput()) {
+          accKey.push(backspaceStr);
+          tip();
+        } else {
+          vscode.postMessage({ type: "Backspace" });
+          accKey.splice(-1, 1);
+        }
+        highlightKey(backspaceStr, accKey.join(""));
+      } else {
+        var res = event.code.match(/Key(?<code>[a-zA-Z])|(?<code>Semicolon)/);
+
+        if (res) {
+          if (needClear()) {
+            clearInput();
+          }
+          res = res.groups.code;
+          res = res === "Semicolon" ? ";" : res;
+          // res = res === "F5" ? "<F5>" : res;
+          accKey.push(res);
+          // cmd+p shift+p这类非法的组合
+          // 要放在下一个if前面，因为下一个if会把没有splice的key发送给postMessage给inputBuffer
+          if (isValidKeyCombination(validKey + event.key)) {
+            accKey.splice(-1, 1);
+            validKey = undefined;
+            return;
+          }
+
+          tip();
+          highlightKey(res, accKey.join(""));
+          if (!isKeyCombinationModal()) {
+            console.log(res);
+            vscode.postMessage({ type: "key", key: res });
+          }
+        } else {
+          // accKey.push(event.key);
+          validKey = "<" + event.key + ">";
+        }
+        // console.log('==>', accKey.join(""));
+        // console.log(event.key, event.code);
+        // if (isValidKeyCombination("<"+validKey+">"+event.key)) {
+        //   console.log(accKey);
+        //   accKey = [];
+        //   validKey = undefined;
+        //   return;
+        // }
+      }
+      var inputKey = document.getElementById("inputKey");
+      const str = accKey.join("").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      inputKey.innerHTML =
+        (isKeyCombinationModal() ? "组合键: " : "输入: ") + str;
+    });
+  </script>
+  <script>
+    vscode.postMessage({ type: "requestPathShortcut" });
+    window.addEventListener("message", (event) => {
+      const type = event.data.type;
+      const pathShortcut = event.data.pathShortcut;
+      const bs = event.data.bs;
+      const overlayElement = document.getElementById("overlay");
+      const bsElement = document.getElementById("bs");
+      let htmlbs = "";
+      let html = "";
+
+      const bodys = [bs, pathShortcut].map((data) => {
+        let tmpHtml = "";
+        for (const obj of data) {
+          tmpHtml += `<div class="container1"><div>${obj.name}</div>`;
+          const isNon =
+            (obj.shortcuts && obj.shortcuts.startsWith("没有快捷键")) ||
+            (obj.key && obj.key.startsWith("没有快捷键"));
+          const isAAoCtrlA = obj.key; //
+          let sty = isAAoCtrlA ? "key" : "shortcuts";
+          sty = isNon ? "nonShortscuts" : sty;
+          const shorts = isNon ? "没有快捷键" : obj[sty];
+
+          drawButton(
+            shorts,
+            13,
+            isAAoCtrlA ? "white" : "black",
+            3,
+            { Y: 2, X: 5 },
+            {
+              shadowColor: "rgba(0,0,0,0.3)",
+              blur: 3,
+              shadowOffsetX: 3,
+              shadowOffsetY: 3
+            },
+            isNon ? "brown" : isAAoCtrlA ? "#005fb8" : "#ffc745",
+            "transparent"
+          );
+          // tmpHtml += `<div id="ctx${idx}" class=${sty}>${shorts}</div></div>`;
+          tmpHtml += `<div id="ctx${idx}"></div></div>`;
+          idx++;
+
+          // if (!isAAoCtrlA) {
+          //   // const sty = bool ? 'nonShortscuts': "shortcuts";
+          //   // const sc = bool ? '没有快捷键': obj.shortcuts;
+          //   tmpHtml += `<span class=${sty}>[${sc}]</span> <br/>`;
+          // } else {
+          //   // const sty = bool ? 'nonShortscuts': "key";
+          //   // const sc = bool ? '没有快捷键': obj.key;
+          //   tmpHtml += `<span class=${sty}>[${sc}]</span> <br/>`;
+          // }
+        }
+        return tmpHtml;
+      });
+      // vscode.postMessage({ type: "test", data: pathShortcut, html: bodys });
+
+      bsElement.innerHTML = htmlbs + bodys[0];
+      overlayElement.innerHTML = html + bodys[1];
+      canvasArr.forEach((cv, idx) => {
+        document.getElementById("ctx" + idx).appendChild(cv);
+      });
+    });
+  </script>
+</html>

@@ -1,0 +1,229 @@
+{
+  "name": "space_shortcus",
+  "displayName": "space_shortcus",
+  "description": "Free the mouse and trackpad and use the keyboard",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.97.0"
+  },
+
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cshiftfgo.closeCshiftgo",
+        "title": "关闭cshiftgo(快捷键插件)"
+      }
+    ],
+    "keybindings": [
+      {
+        "key": "space x",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "variables.collapse"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space a",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "workbench.debug.viewlet.action.addWatchExpression"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space r",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "workbench.debug.viewlet.action.removeAllWatchExpressions"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space c",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "watch.collapse"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space d",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "extension.js-debug.disableSourceMapStepping"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'node-terminal'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-extensionHost' || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
+      },
+      {
+        "key": "space f",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "extension.js-debug.enableSourceMapStepping"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'node-terminal'  || jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome'  || jsDebugIsMapSteppingDisabled &&  debugType == 'pwa-extensionHost'  || jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge' || jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
+      },
+      {
+        "key": "space b",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "callStack.collapse"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space n",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "loadedScripts.collapse"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space s",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "workbench.debug.viewlet.action.addFunctionBreakpointAction"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space g",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "workbench.debug.viewlet.action.toggleBreakpointsActivatedAction"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "key": "space t",
+        "command": "runCommands",
+        "args": {
+          "commands": [
+            {
+              "command": "workbench.debug.viewlet.action.removeAllBreakpoints"
+            },
+            {
+              "command": "cshiftfgo.closeCshiftgo"
+            }
+          ]
+        },
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug"
+      },
+      {
+        "command": "cshiftfgo.showShortcutOverlay_explorer",
+        "key": "alt+space",
+        "mac": "alt+space",
+        "when": "activeViewlet == 'workbench.view.explorer' && viewContainer.workbench.view.explorer.enabled"
+      },
+      {
+        "command": "cshiftfgo.showShortcutOverlay_search",
+        "key": "alt+space",
+        "mac": "alt+space",
+        "when": "activeViewlet == 'workbench.view.search' && workbench.view.search.active"
+      },
+      {
+        "command": "cshiftfgo.showShortcutOverlay_scm",
+        "key": "alt+space",
+        "mac": "alt+space",
+        "when": "activeViewlet == 'workbench.view.scm' && workbench.scm.active"
+      },
+      {
+        "command": "cshiftfgo.showShortcutOverlay_debug",
+        "key": "alt+space",
+        "mac": "alt+space",
+        "when": "activeViewlet == 'workbench.view.debug' && viewContainer.workbench.view.debug.enabled"
+      } 
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.98.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "eslint": "^9.21.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
