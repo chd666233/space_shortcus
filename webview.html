@@ -84,14 +84,46 @@
       #wait,
       #nonComm {
         display: none;
+        /* margin-left: 1.5em; */
       }
       .inputShow {
-        position: fixed;
+        /* display: none; */
+        /* position: fixed; */
         padding-left: 13px;
         height: 40px;
-        bottom: 0;
-        left: calc(100 / 5 * 3%);
-        color: cadetblue;
+        /* bottom: 0;
+        left: calc(50%);
+        color: cadetblue; */
+        top: 21px;
+        left: 52px;
+        color: white;
+      }
+
+      #inputKey {
+        font-size: 1.2rem;
+        width: max-content;
+        border-right: 0.1em solid;
+        white-space: nowrap;
+        overflow: hidden;
+        animation: blink-caret 0.3s step-end infinite alternate;
+        transition: all 0.3s;
+        /* margin: 35px 0 0 1.5em; */
+        margin: 0;
+        /* margin-bottom: 0; */
+      }
+      
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: max-content;
+        }
+      }
+      @keyframes blink-caret {
+        50% {
+          border-color: transparent;
+        }
       }
       .inputShow #nonComm {
         color: red;
@@ -102,31 +134,57 @@
       .header {
         background-image: url("{{imgUri}}");
         height: 100px;
-        width: 100%;
         background-position: 50%;
         background-size: cover;
         background-size: calc(100% - 40px); /* 图片宽度缩小，留出 padding */
         background-position: center;
         background-repeat: no-repeat;
+        overflow: hidden;
+        position: relative;
+        left: 0;
+        top: 0;
       }
-      .header h1 {
+      .mglf-1-5 {
+        margin-left: 1.5em;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      /* line-height: 100px; */
+      /* padding: 0 20px; */
+      /* margin-top: 50px; */
+      /* .header h1 {
+        display: none;
         color: #fff;
-        font-size: 1.2em;
-        line-height: 100px;
-        margin: 0 0 0 1.5em;
-        padding: 0 20px;
+        font-size: 1.5em;
+        margin: 35px 0 0 1.5em;
+        width: 4em;
+        border-right: 0.1em solid;
+        animation: typing 2s steps(4, end),
+          blink-caret 0.3s step-end infinite alternate, hide 0.5s 2s forwards;
+        transition: all 0.3s;
+        overflow: hidden;
+        white-space: nowrap;
       }
+      @keyframes hide {
+        to {
+          opacity: 0;
+          display: none;
+        }
+      } */
     </style>
   </head>
   <body>
-    <div class="header">
-      <h1>键盘导航</h1>
-    </div>
+    <!-- <div class="header"> -->
+      <!-- <h1>键盘导航</h1> -->
+    <!-- </div> -->
 
-    <div class="inputShow">
-      <div id="inputKey">输入:</div>
-      <span id="wait">(Space已按下)。正在等待按下第二个按键...</span>
-      <span id="nonComm">组合键(, )不是命令。</span>
+    <div class="header inputShow">
+      <div class="mglf-1-5">
+        <h1 id="inputKey">输入:</h1>
+        <span id="wait">(Space已按下)。正在等待按下第二个按键...</span>
+        <span id="nonComm">组合键(, )不是命令。</span>
+      </div>
     </div>
     <div class="container">
       <div class="main-content">
@@ -281,7 +339,6 @@
         }
       }
       function clearSpaceTimeout() {
-        console.log(333);
         if (needClearTimeout()) {
           timeoutIdArr.forEach((id) => clearTimeout(id));
           timeoutIdArr = [];
@@ -359,7 +416,6 @@
     var validKey;
     // let isKeyCombination = false;
     document.addEventListener("keydown", function (event) {
-      console.log("keydown...");
       // //组合键模式
       let spaceStr = "<Space>" + " ";
       let backspaceStr = "<Backspace>";
@@ -463,7 +519,6 @@
           tip();
           highlightKey(res, accKey.join(""));
           if (!isKeyCombinationModal()) {
-            console.log(res);
             vscode.postMessage({ type: "key", key: res });
           }
         } else {

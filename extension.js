@@ -13,7 +13,7 @@ function activate(context) {
   let panel;
   let activityBar;
   const onKeyPress = async (key) => {
-    console.log('inputBuffer: ', key);
+    // console.log('inputBuffer: ', key);
     if (!key) return;
     inputBuffer.push(key);
     let str = inputBuffer.join('');
@@ -156,7 +156,7 @@ function activate(context) {
     // vscode.commands.executeCommand('setContext', 'cshiftfgo.shortcutsActive', true);
     panel = vscode.window.createWebviewPanel(
       'cshiftfgo.overlay',
-      '跳转快捷键',
+      '键盘导航',
       vscode.ViewColumn.One,
       {
         enableScripts: true,
@@ -167,7 +167,7 @@ function activate(context) {
 
     )
     // 显式切换焦点到 Webview
-    setTimeout(() => panel.reveal(vscode.ViewColumn.One), 10)
+    setTimeout(() => panel.reveal(vscode.ViewColumn.One), 50)
     const imagePath = getBgImg(context);
     const imageUri = panel.webview.asWebviewUri(imagePath);
 
@@ -220,10 +220,6 @@ function getWebviewContent() {
   return fs.readFileSync(htmlPath, 'utf-8');
 }
 function getBgImg(context) {
-  // 获取 webview 资源的 URL
-  // 加载 HTML 文件
-  const htmlPath = path.join(context.extensionPath, 'webview.html');
-  let htmlContent = fs.readFileSync(htmlPath, 'utf-8');
 
   // 替换图片路径为 Webview 可访问的 URI
   const imagePath = vscode.Uri.file(

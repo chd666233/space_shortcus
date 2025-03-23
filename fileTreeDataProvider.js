@@ -169,7 +169,7 @@ const debugSiderBar = [
 const scmSiderBar = [
   { name: "初始化仓库", commands: ["git.init"] },
   // { name: "参阅我们的文档", commands: [], http: 'https://code.visualstudio.com/docs/sourcecontrol/overview' },
-  { name: "发布到 GitHub", commands: ["command:github.publish"] }
+  { name: "发布到 GitHub", commands: ["github.publish"] }
 ]
 class FileTreeDataProvider {
   constructor() {
@@ -255,7 +255,8 @@ class FileTreeDataProvider {
     const exclude = {
       ...filesExclude,
       ...searchExclude,
-      "**/.vscode": true
+      "**/.vscode": true,
+      "**/.git": true
     };
     // const excludeGlob = Object.keys(exclude).filter(pattent => exclude[pattent]).join(',');
     // ✅const excludeGlob = "**/.git,**/.svn,**/.hg,**/.DS_Store,**/Thumbs.db,**/node_modules/**,**/bower_components,**/*.code-search,**/.vscode";
@@ -265,6 +266,7 @@ class FileTreeDataProvider {
       .filter((pattent) => exclude[pattent])
       .map((pattent) => pattent.slice(3))
       .join(",");
+
     excludeGlob = "**/{" + excludeGlob + "}";
 
     // 执行搜索
