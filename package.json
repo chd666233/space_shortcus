@@ -2,12 +2,13 @@
   "name": "space-shortcus",
   "displayName": "Space Shortcus",
   "description": "Free the mouse and trackpad and use the keyboard",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "chenhaidong", 
   "repository": {
     "type": "git",
     "url": "git@github.com:chd666233/space_shortcus.git"
   },
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.97.0"
   },
