@@ -3,7 +3,7 @@
   "displayName": "Space Shortcus",
   "description": "Free the mouse and trackpad and use the keyboard",
   "version": "1.0.1",
-  "publisher": "chenhaidong", 
+  "publisher": "chenhaidong",
   "repository": {
     "type": "git",
     "url": "git@github.com:chd666233/space_shortcus.git"
@@ -100,7 +100,7 @@
             }
           ]
         },
-        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'node-terminal'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-extensionHost' || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge'  || !jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'node-terminal'  || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome'  || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'pwa-extensionHost' || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge'  || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && !jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
       },
       {
         "key": "space f",
@@ -115,7 +115,7 @@
             }
           ]
         },
-        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'node-terminal'  || jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome'  || jsDebugIsMapSteppingDisabled &&  debugType == 'pwa-extensionHost'  || jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge' || jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
+        "when": "cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'node-terminal' || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'pwa-chrome' || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'pwa-extensionHost' || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'pwa-msedge' || cshiftfgo.shortcutsActive && cshiftfgo.activeBar_debug && jsDebugIsMapSteppingDisabled && debugType == 'pwa-node'"
       },
       {
         "key": "space b",
