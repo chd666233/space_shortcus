@@ -51,7 +51,9 @@ Plugin icon
 ### 1.0.2
 尝试修复space在插件关闭后占用问题
 Attempts to fix an issue where space is occupied after the plugin is closed
-
+### 1.0.3
+补充使用的说明需要开启主侧边栏
+Additional instructions for use need to open the main sidebar
 
 
 
