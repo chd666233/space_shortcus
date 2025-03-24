@@ -23,7 +23,7 @@
     "commands": [
       {
         "command": "cshiftfgo.closeCshiftgo",
-        "title": "关闭cshiftgo(快捷键插件)"
+        "title": "关闭space-shortcuts(快捷键导航)"
       }
     ],
     "keybindings": [
