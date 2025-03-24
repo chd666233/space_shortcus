@@ -167,7 +167,7 @@ function activate(context) {
 
     )
     // 显式切换焦点到 Webview
-    setTimeout(() => panel.reveal(vscode.ViewColumn.One), 50)
+    setTimeout(() => panel.reveal(vscode.ViewColumn.One), 30)
     const imagePath = getBgImg(context);
     const imageUri = panel.webview.asWebviewUri(imagePath);
 

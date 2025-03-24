@@ -37,12 +37,19 @@
         --keybinding-background: rgba(0, 0, 0, 0.08);
         --keybinding-foreground: #005fb8;
       }
+      #bs,
+      #overlay {
+        color: var(--keybinding-foreground);
+      }
+      .not {
+        color: #b1b4b8;
+      }
       .container1 > div:first-child {
         font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
         padding: 2px 4px;
-        color: var(--blue);
+        /* color: var(--blue); */
         background-color: var(--keybinding-background);
-        color: var(--keybinding-foreground);
+        /* color: var(--keybinding-foreground); */
         display: inline-block;
         -webkit-border-radius: 4px;
         -moz-border-radius: 4px;
@@ -111,7 +118,7 @@
         margin: 0;
         /* margin-bottom: 0; */
       }
-      
+
       @keyframes typing {
         from {
           width: 0;
@@ -176,7 +183,7 @@
   </head>
   <body>
     <!-- <div class="header"> -->
-      <!-- <h1>键盘导航</h1> -->
+    <!-- <h1>键盘导航</h1> -->
     <!-- </div> -->
 
     <div class="header inputShow">
@@ -208,6 +215,11 @@
       </div>
     </div>
   </body>
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      window.focus();
+    });
+  </script>
   <script>
     var idx = 0;
     var canvasArr = [];
@@ -366,12 +378,17 @@
             var w = ctxArr[index].measureText(str).width;
             ctxArr[index].fillStyle = "red";
             ctxArr[index].fillText(str, textX, textY);
-
+            document.getElementById("color" + index).classList.remove("not");
             clearFunClouser[index] = function () {
               ctxArr[index].fillStyle = fontCol[0];
               ctxArr[index].fillRect(textX, textY - 13 / 2, w, 13);
               ctxArr[index].fillStyle = fontCol[1];
               ctxArr[index].fillText(str, textX, textY);
+            };
+          } else {
+            document.getElementById("color" + index).classList.add("not");
+            clearFunClouser[index] = function () {
+              document.getElementById("color" + index).classList.remove("not");
             };
           }
         });
@@ -554,7 +571,7 @@
       const bodys = [bs, pathShortcut].map((data) => {
         let tmpHtml = "";
         for (const obj of data) {
-          tmpHtml += `<div class="container1"><div>${obj.name}</div>`;
+          tmpHtml += `<div class="container1"><div id=color${idx}>${obj.name}</div>`;
           const isNon =
             (obj.shortcuts && obj.shortcuts.startsWith("没有快捷键")) ||
             (obj.key && obj.key.startsWith("没有快捷键"));

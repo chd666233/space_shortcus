@@ -25,9 +25,17 @@ const activityBar = [
     commands: ["workbench.action.openGlobalKeybindingsFile"]
   },
   {
-    name: "默认键盘快捷键(JSON)",
-    commands: ["workbench.action.openDefaultKeybindingsFile"]
+    name: "首选项:打开键盘快捷方式",
+    commands: ["workbench.action.openGlobalKeybindings"]
+  },
+  {
+    name: "设置",
+    commands: ["workbench.action.openSettings"]
   }
+  // {
+  //   name: "默认键盘快捷键(JSON)",
+  //   commands: ["workbench.action.openDefaultKeybindingsFile"]
+  // }
 ];
 const searchSiderBar = [
   { name: "刷新", commands: ["search.action.refreshSearchResults"] },
